@@ -6,6 +6,8 @@ import json
 import nltk
 from nltk.corpus import stopwords
 import string
+import socket
+
 from nltk.tokenize import word_tokenize
 nltk.download('punkt_tab')
 nltk.download('stopwords')
@@ -235,3 +237,40 @@ if __name__ == "__main__":
     # Print results
     for label, result in predictions.items():
         print(f"{label}: Probability = {result['probability']:.4f}, Predicted = {result['predicted']}")
+
+
+
+# ---------- MOCK BOT SETUP (Twitch IRC) ----------
+HOST = "irc.chat.twitch.tv"
+PORT = 6667
+NICK = "ModBot3000_pb"
+TOKEN = "oauth:jss6sf07xzpdv1sfn14qwgosl98akh"
+CHANNEL = "#cawgo953"
+
+sock = socket.socket()
+sock.connect((HOST, PORT))
+sock.send(f"PASS {TOKEN}\n".encode("utf-8"))
+sock.send(f"NICK {NICK}\n".encode("utf-8"))
+sock.send(f"JOIN {CHANNEL}\n".encode("utf-8"))
+
+print("Bot is running...")
+
+while True:
+    resp = sock.recv(2048).decode("utf-8")
+    if resp.startswith("PING"):
+        sock.send("PONG :tmi.twitch.tv\r\n".encode("utf-8"))
+        continue
+
+    if "PRIVMSG" in resp:
+        username = resp.split("!")[0][1:]
+        message = resp.split("PRIVMSG")[1].split(":", 1)[1].strip()
+
+        print(f"{username}: {message}")
+
+        # Run prediction
+        results = predict_labels(message, model)
+        toxic_labels = [label for label, data in results.items() if data["predicted"] == 1]
+
+        if toxic_labels:
+            warning = f"/me ⚠️ @{username}, your message may contain: {', '.join(toxic_labels)}"
+            sock.send(f"PRIVMSG {CHANNEL} :{warning}\n".encode("utf-8"))
