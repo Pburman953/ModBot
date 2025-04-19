@@ -4,6 +4,10 @@ from backend.utils.preprocess import preprocess
 from backend import config
 
 import socket, torch, json, numpy as np
+from backend.utils.user_tracker import update_offense, get_offenses, reset_offenses
+from backend.utils.adaptive_punishment import adaptive_punishment
+
+
 
 # Load word_to_index and embeddings
 with open(config.WORD_TO_INDEX_PATH) as f:
@@ -38,9 +42,12 @@ while True:
         message = resp.split("PRIVMSG")[1].split(":", 1)[1].strip()
 
         print(f"{username}: {message}")
-        results = predict_labels(message, model)
+        results = predict_labels(preprocess(message), model)
         toxic_labels = [label for label, data in results.items() if data["predicted"] == 1]
 
         if toxic_labels:
             warning = f"/me ⚠️ @{username}, your message may contain: {', '.join(toxic_labels)}"
             sock.send(f"PRIVMSG {config.CHANNEL} :{warning}\n".encode("utf-8"))
+            if any(label["predicted"] == 1 for label in results.values()):
+                adaptive_punishment(sock, config.CHANNEL, username, results)
+

@@ -9,6 +9,7 @@ CHANNEL = "#cawgo953"
 MODEL_PATH = "backend/models/bi_lstm_glove.pth"
 EMBEDDING_MATRIX_PATH = "backend/models/glove_embeddings.npy"
 WORD_TO_INDEX_PATH = "backend/models/word_to_index.json"
+OFFENSES_FILE = "modbot/backend/bot/user_offenses.json"
 
 # Model hyperparams
 HIDDEN_DIM = 256
