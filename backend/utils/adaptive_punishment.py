@@ -1,15 +1,15 @@
 import time
 from backend.utils.ban_user import ban_user
 from backend.utils.timeout_user import timeout_user
-from config import OFFENSES_FILE
+from backend import config
 import json
 import os
 from backend.utils.user_tracker import get_offenses, update_offense
 
 def load_offenses():
-    if not os.path.exists(OFFENSES_FILE):
+    if not os.path.exists(config.OFFENSES_FILE):
         return {}
-    with open(OFFENSES_FILE, "r") as f:
+    with open(config.OFFENSES_FILE, "r") as f:
         return json.load(f)
 
 
