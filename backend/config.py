@@ -2,7 +2,7 @@
 HOST = "irc.chat.twitch.tv"
 PORT = 6667
 NICK = "ModBot3000_pb"
-TOKEN = "oauth:jss6sf07xzpdv1sfn14qwgosl98akh"
+TOKEN = "oauth:jss6sf07xzpdv1sfn14qwgosl98akh" # ACESS TOKEN
 CHANNEL = "#cawgo953"
 
 # Model paths

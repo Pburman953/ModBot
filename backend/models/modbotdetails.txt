@@ -3,7 +3,7 @@ pass: pbmodbot3000
 
 my channel:cawgo953
 
-TWITCH ACCOUNT	
+TWITCH ACCOUNT	0
 modbot3000_pb (wrong?)
 ACCESS TOKEN	
 jss6sf07xzpdv1sfn14qwgosl98akh
