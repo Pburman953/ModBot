@@ -6,12 +6,18 @@ my channel:cawgo953
 TWITCH ACCOUNT	0
 modbot3000_pb (wrong?)
 ACCESS TOKEN	
-jss6sf07xzpdv1sfn14qwgosl98akh
+0xsvgsk8b0dgt8i5957tlpq4u238xb
 REFRESH TOKEN	
-knxjdol2mm3ljp2aeqm132nuf3y4t9lql3lar22eop7aptx59n
+2zcjy4eqmmwfnpk48evexkfftq7guel1qjdfcjpwx8avbl5cfv
 CLIENT ID	
 gp762nuuoqcoxypju8c569th9wz7q5
 
 dev account:
 cawgoDev953
 DevCawgo953
+
+
+Scopes needed
+chat:read	Read messages in chat (for detection)
+chat:edit	Send messages (for warnings, mod messages)
+moderator:manage:banned_users	Timeout or ban users via API
