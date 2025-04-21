@@ -7,7 +7,7 @@ import socket, torch, json, numpy as np
 from backend.utils.user_tracker import update_offense, get_offenses, reset_offenses
 from backend.utils.adaptive_punishment2 import adaptive_punishment
 from backend.utils.moderation import get_user_id, check_token_permissions  # Adjust if your path differs
-
+from backend.utils.adaptive_punishment2 import add_to_whitelist, load_whitelist
 
 ACCESS_TOKEN = config.ACCESS_TOKEN
 CLIENT_ID = config.CLIENT_ID
@@ -26,6 +26,9 @@ model.load_state_dict(torch.load(config.MODEL_PATH, map_location="cpu"))
 model.embedding.weight.data.copy_(torch.tensor(embedding_matrix))
 model.embedding.weight.requires_grad = False
 model.eval()
+
+# Load whitelist
+load_whitelist()
 
 
 def fetch_and_store_ids():
@@ -84,6 +87,8 @@ check_token_permissions(config.ACCESS_TOKEN)
 
 print("Bot is running...")
 
+add_to_whitelist(config.CHANNEL.replace("#", ""))
+
 fetch_and_store_ids()
 
 while True:
@@ -113,18 +118,5 @@ while True:
                 moderator_id=MODERATOR_ID,
                 broadcaster_id=BROADCASTER_ID
             )
-'''
-    if "PRIVMSG" in resp:
-        username = resp.split("!")[0][1:]
-        message = resp.split("PRIVMSG")[1].split(":", 1)[1].strip()
 
-        print(f"{username}: {message}")
-        results = predict_labels(preprocess(message), model)
-        toxic_labels = [label for label, data in results.items() if data["predicted"] == 1]
 
-        if toxic_labels:
-            warning = f"/me ⚠️ @{username}, your message may contain: {', '.join(toxic_labels)}"
-            sock.send(f"PRIVMSG {config.CHANNEL} :{warning}\n".encode("utf-8"))
-            if any(label["predicted"] == 1 for label in results.values()):
-                adaptive_punishment(sock, config.CHANNEL, username, results)
-'''
