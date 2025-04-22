@@ -8,7 +8,10 @@
 </form>
 <ul>
     {% for user in whitelist %}
-    <li>{{ user }}</li>
+        <li>{{ user }}</li>
+    {% else %}
+        <li>No whitelisted users yet.</li>
     {% endfor %}
 </ul>
 {% endblock %}
+

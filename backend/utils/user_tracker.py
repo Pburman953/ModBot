@@ -1,4 +1,3 @@
-# modbot/backend/bot/user_tracker.py
 
 import json
 import os

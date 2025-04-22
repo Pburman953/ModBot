@@ -7,7 +7,7 @@ import socket, torch, json, numpy as np
 from backend.utils.user_tracker import update_offense, get_offenses, reset_offenses
 from backend.utils.adaptive_punishment2 import adaptive_punishment
 from backend.utils.moderation import get_user_id, check_token_permissions  # Adjust if your path differs
-from backend.utils.adaptive_punishment2 import add_to_whitelist, load_whitelist, WHITELIST, load_whitelist
+from backend.utils.adaptive_punishment2 import add_to_whitelist, load_whitelist
 
 
 ACCESS_TOKEN = config.ACCESS_TOKEN
@@ -108,9 +108,9 @@ while True:
 
         print(f"{username}: {message}")
         
-        
+        whitelist = load_whitelist()
 
-        if username.lower() in WHITELIST:
+        if username.lower() in whitelist:
             print(f"[ModBot] {username} is whitelisted. Skipping punishment.")
             continue
         

@@ -5,6 +5,8 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from flask import Flask, jsonify, render_template, request, redirect, url_for
 from backend.utils.user_tracker import get_all_offenses
+from backend.utils.adaptive_punishment2 import load_whitelist, save_whitelist
+
 import time
 
 app = Flask(__name__)
@@ -40,12 +42,20 @@ def get_flagged_data():
     return jsonify(flagged_data)
 
 
+
 @app.route('/whitelist', methods=["GET", "POST"])
 def whitelist():
+    whitelist = load_whitelist()
+
     if request.method == "POST":
-        # Add username to whitelist logic
-        pass
-    return render_template("whitelist.html", whitelist=[])
+        username = request.form.get("username", "").strip().lower()
+        if username and username not in whitelist:
+            whitelist.add(username)
+            save_whitelist(whitelist)
+        return redirect(url_for('whitelist'))
+
+    return render_template("whitelist.html", whitelist=sorted(whitelist))
+
 
 @app.route('/settings', methods=["GET", "POST"])
 def settings():

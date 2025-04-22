@@ -7,31 +7,31 @@ from backend import config
 
 # white list functions
 WHITELIST_PATH = os.path.join("backend", "bot", "whitelist.json")
-WHITELIST = set()
 
 def load_whitelist():
     global WHITELIST
 
     if not os.path.exists(WHITELIST_PATH):
-        WHITELIST = set()
+        
         print("[ModBot] No whitelist file found. Starting with empty whitelist.")
-        return
+        return set()
 
     with open(WHITELIST_PATH, "r") as f:
-        WHITELIST = set(json.load(f))
-        print("[ModBot] Whitelist loaded:", ", ".join(sorted(WHITELIST)))
+        whitelist = set(json.load(f))
+        print("[ModBot] Whitelist loaded:", ", ".join(sorted(whitelist)))
+        return whitelist    
 
-def save_whitelist():
+def save_whitelist(whitelist):
     with open(WHITELIST_PATH, "w") as f:
-        json.dump(list(WHITELIST), f, indent=4)
+        json.dump(list(whitelist), f, indent=4)
     print("[ModBot] Whitelist saved to disk.")
 
 def add_to_whitelist(username):
-    global WHITELIST
-    WHITELIST.add(username.lower())
-    save_whitelist()
+    whitelist = load_whitelist()
+    whitelist.add(username.lower())
+    save_whitelist(whitelist)
     print(f"[ModBot] Added '{username}' to whitelist.")
-    print("[ModBot] Current whitelist:", ", ".join(sorted(WHITELIST)))
+    print("[ModBot] Current whitelist:", ", ".join(sorted(whitelist)))
 
 # Offenses functions
  
