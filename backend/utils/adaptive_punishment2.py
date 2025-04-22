@@ -42,7 +42,7 @@ def load_offenses():
         return json.load(f)
 
 
-def adaptive_punishment(username, toxicity_labels, access_token, client_id, moderator_id, broadcaster_id):
+def adaptive_punishment(username, toxicity_labels, message, access_token, client_id, moderator_id, broadcaster_id):
     global WHITELIST
     if username in WHITELIST:
         print(f"[ModBot] {username} is whitelisted. Skipping punishment.")
@@ -52,21 +52,30 @@ def adaptive_punishment(username, toxicity_labels, access_token, client_id, mode
         offense_count = offense_data["count"]
 
         print(f"[Punishment] {username} offense count: {offense_count + 1}")
-
+    
+        # Retrieve user ID
         user_id = get_user_id(username, access_token, client_id)
         if not user_id:
             print(f"[ModBot] Failed to retrieve user_id for {username}")
             return
 
-        # Punishment logic
+        # Define the punishment logic based on offense count
         if offense_count == 0:
+            # Apply first timeout (30 seconds)
             timeout_user_via_api(user_id, moderator_id, broadcaster_id, 30, "Toxicity detected - 1st offense", access_token, client_id)
+            action_taken = "Timeout - 1st offense"
         elif offense_count == 1:
+            # Apply second timeout (5 minutes)
             timeout_user_via_api(user_id, moderator_id, broadcaster_id, 300, "Toxicity detected - 2nd offense", access_token, client_id)
+            action_taken = "Timeout - 2nd offense"
         elif offense_count == 2:
+            # Apply third timeout (15 minutes)
             timeout_user_via_api(user_id, moderator_id, broadcaster_id, 900, "Toxicity detected - 3rd offense", access_token, client_id)
+            action_taken = "Timeout - 3rd offense"
         else:
+            # Ban user after multiple offenses
             ban_user_via_api(user_id, moderator_id, broadcaster_id, "Repeated toxic behavior", access_token, client_id)
+            action_taken = "Ban - Repeated toxic behavior"
 
-        # Update offense tracker
-        update_offense(username)
+    # Update the offense data with the last message and action taken
+    update_offense(username, message, action_taken)

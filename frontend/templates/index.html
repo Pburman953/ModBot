@@ -1,31 +1,6 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>ModBot Dashboard</title>
-</head>
-<body>
-    <h1>ModBot Dashboard</h1>
+{% extends "base.html" %}
 
-    <h2>Flagged Users</h2>
-    <ul>
-        {% for user, data in offenses.items() %}
-            <li>{{ user }} - Offenses: {{ data['count'] }}
-                <a href="{{ url_for('reset_user', username=user) }}">Reset</a>
-            </li>
-        {% endfor %}
-    </ul>
-
-    <h2>Add to Whitelist</h2>
-    <form method="POST" action="{{ url_for('whitelist_user') }}">
-        <input type="text" name="username" placeholder="Username" required>
-        <button type="submit">Add</button>
-    </form>
-
-    <h3>Current Whitelist</h3>
-    <ul>
-        {% for user in whitelist %}
-            <li>{{ user }}</li>
-        {% endfor %}
-    </ul>
-</body>
-</html>
+{% block content %}
+<h1>Welcome to ModBot Dashboard</h1>
+<p>Monitor and manage toxic behavior in your Twitch chat.</p>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Settings</h1>
+<form method="POST">
+    <label>Toxicity Threshold:</label>
+    <input type="number" step="0.01" name="threshold" value="{{ settings.threshold }}">
+
+    <label>Blacklisted Words:</label>
+    <textarea name="blacklist" rows="5">{{ settings.blacklist }}</textarea>
+
+    <button type="submit">Save</button>
+</form>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Whitelist</h1>
+<form method="POST">
+    <input type="text" name="username" placeholder="Add username">
+    <button type="submit">Add</button>
+</form>
+<ul>
+    {% for user in whitelist %}
+    <li>{{ user }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}

@@ -126,6 +126,7 @@ while True:
                 adaptive_punishment(
                     username=username,
                     toxicity_labels=toxic_labels,
+                    message = message,
                     access_token=ACCESS_TOKEN,
                     client_id=CLIENT_ID,
                     moderator_id=MODERATOR_ID,

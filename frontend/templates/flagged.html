@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Flagged Users</h1>
+    <table id="flagged-users-table">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Message</th>
+                <th>Timestamp</th>
+                <th>Action Taken</th>
+            </tr>
+        </thead>
+        <tbody id="flagged-users-body">
+            {% for username, data in flagged_messages.items() %}
+                <tr>
+                    <td>{{ username }}</td>
+                    <td>{{ data.last_message }}</td>
+                    <td>{{ data.last_offense_readable }}</td>
+                    <td>{{ data.action_taken }}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="4">No flagged users.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Function to load flagged users dynamically via AJAX
+        function loadFlaggedUsers() {
+            $.get("/get_flagged_data", function(data) {
+                // Clear the current table body
+                $('#flagged-users-body').empty();
+
+                // Loop through the data and append new rows to the table
+                for (var username in data) {
+                    var userData = data[username];
+                    var row = `<tr>
+                        <td>${username}</td>
+                        <td>${userData.last_message}</td>
+                        <td>${userData.last_offense_readable}</td>
+                        <td>${userData.action_taken}</td>
+                    </tr>`;
+                    $('#flagged-users-body').append(row);
+                }
+            });
+        }
+
+        // Load flagged users every 5 seconds
+        setInterval(loadFlaggedUsers, 5000);  // Fetch new data every 5 seconds
+
+        // Initial load on page load
+        loadFlaggedUsers();
+    </script>
+{% endblock %}

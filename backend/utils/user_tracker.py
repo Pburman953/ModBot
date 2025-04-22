@@ -35,10 +35,13 @@ def get_offenses(username):
 
     return user_offenses[username]
 
-def update_offense(username):
+def update_offense(username, message, action):
     user_offenses[username]["count"] += 1
     user_offenses[username]["last_offense"] = time.time()
+    user_offenses[username]["last_message"] = message
+    user_offenses[username]["action_taken"] = action
     save_offenses()
+
 
 def reset_offenses(username):
     if username in user_offenses:
@@ -46,4 +49,8 @@ def reset_offenses(username):
         save_offenses()
 
 def get_all_offenses():
-    return dict(user_offenses)
+    if os.path.exists(config.OFFENSES_FILE):
+        with open(config.OFFENSES_FILE, "r") as f:
+            return json.load(f)
+    else:
+        return {}

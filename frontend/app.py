@@ -1,32 +1,58 @@
-from flask import Flask, render_template, request, redirect, url_for
-import json
-import os
 import sys
+import os
+import json
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-
-from backend import config
-from backend.utils.user_tracker import get_all_offenses, reset_offenses
-from backend.utils.adaptive_punishment2 import WHITELIST, add_to_whitelist, load_whitelist
+from flask import Flask, jsonify, render_template, request, redirect, url_for
+from backend.utils.user_tracker import get_all_offenses
+import time
 
 app = Flask(__name__)
 
-@app.route("/")
+@app.route('/')
 def index():
-    offenses = get_all_offenses()
-    return render_template("index.html", offenses=offenses, whitelist=sorted(WHITELIST))
+    return render_template("index.html")
 
-@app.route("/whitelist", methods=["POST"])
-def whitelist_user():
-    username = request.form["username"]
-    add_to_whitelist(username)
-    return redirect(url_for("index"))
+@app.route('/flagged')
+def flagged():
+    # Load flagged message data
+    flagged_data = get_all_offenses()
 
-@app.route("/reset/<username>")
-def reset_user(username):
-    reset_offenses(username)
-    return redirect(url_for("index"))
+    # Convert UNIX timestamps to readable format
+    for user, data in flagged_data.items():
+        ts = data.get("last_offense", 0)
+        data["last_offense_readable"] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(ts))
 
-if __name__ == "__main__":
-    load_whitelist()
+    # Pass the flagged data to the template
+    return render_template("flagged.html", flagged_messages=flagged_data)
+
+@app.route('/get_flagged_data', methods=["GET"])
+def get_flagged_data():
+    # Load flagged message data
+    flagged_data = get_all_offenses()
+
+    # Convert UNIX timestamps to readable format
+    for user, data in flagged_data.items():
+        ts = data.get("last_offense", 0)
+        data["last_offense_readable"] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(ts))
+
+    # Return flagged data as JSON for AJAX
+    return jsonify(flagged_data)
+
+
+@app.route('/whitelist', methods=["GET", "POST"])
+def whitelist():
+    if request.method == "POST":
+        # Add username to whitelist logic
+        pass
+    return render_template("whitelist.html", whitelist=[])
+
+@app.route('/settings', methods=["GET", "POST"])
+def settings():
+    if request.method == "POST":
+        # Save settings logic here
+        pass
+    return render_template("settings.html", threshold=0.5, blacklist=[])
+
+if __name__ == '__main__':
     app.run(debug=True)
