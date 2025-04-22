@@ -1,14 +1,49 @@
 {% extends "base.html" %}
-
 {% block content %}
 <h1>Settings</h1>
+
+<!-- Show current threshold -->
+<p><strong>Current Toxicity Threshold:</strong> {{ toxicity_threshold }}</p>
+
+<!-- Dropdown to update threshold -->
 <form method="POST">
-    <label>Toxicity Threshold:</label>
-    <input type="number" step="0.01" name="threshold" value="{{ settings.threshold }}">
-
-    <label>Blacklisted Words:</label>
-    <textarea name="blacklist" rows="5">{{ settings.blacklist }}</textarea>
-
-    <button type="submit">Save</button>
+    <label for="threshold">Set New Threshold:</label>
+    <select name="threshold" id="threshold">
+        <option value="0.2" {% if toxicity_threshold == 0.2 %}selected{% endif %}>Lenient (0.2)</option>
+        <option value="0.5" {% if toxicity_threshold == 0.5 %}selected{% endif %}>Moderate (0.5)</option>
+        <option value="0.8" {% if toxicity_threshold == 0.8 %}selected{% endif %}>Strict (0.8)</option>
+    </select>
+    <input type="hidden" name="action" value="threshold">
+    <button type="submit">Save Threshold</button>
 </form>
+
+<br>
+
+<!-- Add a Word -->
+<form method="POST">
+    <label>Add Blacklisted Word:</label>
+    <input type="text" name="blacklisted_word" placeholder="Enter word">
+    <input type="hidden" name="threshold" value="{{ toxicity_threshold }}">
+    <input type="hidden" name="action" value="add">
+    <button type="submit">Add</button>
+</form>
+
+<br>
+
+<h3>Current Blacklisted Words:</h3>
+<ul>
+    {% for word in blacklisted_words %}
+        <li>
+            {{ word }}
+            <form method="POST" style="display:inline;">
+                <input type="hidden" name="word_to_remove" value="{{ word }}">
+                <input type="hidden" name="threshold" value="{{ toxicity_threshold }}">
+                <input type="hidden" name="action" value="remove">
+                <button type="submit">Remove</button>
+            </form>
+        </li>
+    {% else %}
+        <li>No blacklisted words.</li>
+    {% endfor %}
+</ul>
 {% endblock %}

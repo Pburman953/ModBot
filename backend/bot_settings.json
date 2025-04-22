@@ -1,0 +1,6 @@
+{
+    "toxicity_threshold": 0.2,
+    "blacklisted_words": [
+        "cunt"
+    ]
+}

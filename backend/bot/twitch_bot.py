@@ -8,6 +8,7 @@ from backend.utils.user_tracker import update_offense, get_offenses, reset_offen
 from backend.utils.adaptive_punishment2 import adaptive_punishment
 from backend.utils.moderation import get_user_id, check_token_permissions  # Adjust if your path differs
 from backend.utils.adaptive_punishment2 import add_to_whitelist, load_whitelist
+from backend.utils.settings import load_settings
 
 
 ACCESS_TOKEN = config.ACCESS_TOKEN
@@ -92,7 +93,9 @@ add_to_whitelist(config.CHANNEL.replace("#", ""))
 
 fetch_and_store_ids()
 
-load_whitelist() 
+settings_data = load_settings()
+toxicity_threshold = settings_data["toxicity_threshold"]
+blacklisted_words = set(settings_data["blacklisted_words"])
 
 while True:
     resp = sock.recv(2048).decode("utf-8")
@@ -110,27 +113,44 @@ while True:
         
         whitelist = load_whitelist()
 
+
         if username.lower() in whitelist:
             print(f"[ModBot] {username} is whitelisted. Skipping punishment.")
             continue
-        
-        else:
-            results = predict_labels(preprocess(message), model)
-            toxic_labels = [label for label, data in results.items() if data["predicted"] == 1]
 
-            if toxic_labels:
-                warning = f"/me ⚠️ @{username}, your message may contain: {', '.join(toxic_labels)}"
-                sock.send(f"PRIVMSG {config.CHANNEL} :{warning}\n".encode("utf-8"))
+        if any(blacklisted_word in message.lower() for blacklisted_word in blacklisted_words):
+            print(f"[ModBot] {username}'s message contains a blacklisted word. Applying punishment.")
+            
+            warning = f"/me ⚠️ @{username}, your message contains a blacklisted word."
+            sock.send(f"PRIVMSG {config.CHANNEL} :{warning}\n".encode("utf-8"))
+                        
+            adaptive_punishment(
+                username=username,
+                toxicity_labels=["blacklisted word"],
+                message=message,
+                access_token=ACCESS_TOKEN,
+                client_id=CLIENT_ID,
+                moderator_id=MODERATOR_ID,
+                broadcaster_id=BROADCASTER_ID
+            )
+            continue            
+            
+        results = predict_labels(preprocess(message), model, toxicity_threshold)
+        toxic_labels = [label for label, data in results.items() if data["predicted"] == 1]
 
-                # Use API-based punishment instead of IRC-based
-                adaptive_punishment(
-                    username=username,
-                    toxicity_labels=toxic_labels,
-                    message = message,
-                    access_token=ACCESS_TOKEN,
-                    client_id=CLIENT_ID,
-                    moderator_id=MODERATOR_ID,
-                    broadcaster_id=BROADCASTER_ID
-                )
+        if toxic_labels:
+            warning = f"/me ⚠️ @{username}, your message may contain: {', '.join(toxic_labels)}"
+            sock.send(f"PRIVMSG {config.CHANNEL} :{warning}\n".encode("utf-8"))
+
+            # Use API-based punishment based on toxicity labels
+            adaptive_punishment(
+                username=username,
+                toxicity_labels=toxic_labels,
+                message=message,
+                access_token=ACCESS_TOKEN,
+                client_id=CLIENT_ID,
+                moderator_id=MODERATOR_ID,
+                broadcaster_id=BROADCASTER_ID
+            )
 
 

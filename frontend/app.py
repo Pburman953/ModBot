@@ -6,6 +6,8 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from flask import Flask, jsonify, render_template, request, redirect, url_for
 from backend.utils.user_tracker import get_all_offenses
 from backend.utils.adaptive_punishment2 import load_whitelist, save_whitelist
+from backend.utils.settings import load_settings, save_settings
+
 
 import time
 
@@ -56,13 +58,44 @@ def whitelist():
 
     return render_template("whitelist.html", whitelist=sorted(whitelist))
 
-
 @app.route('/settings', methods=["GET", "POST"])
 def settings():
+    settings_data = load_settings()
+
     if request.method == "POST":
-        # Save settings logic here
-        pass
-    return render_template("settings.html", threshold=0.5, blacklist=[])
+        action = request.form.get("action")
+
+        # Safe parsing of threshold
+        try:
+            threshold = float(request.form.get("threshold", settings_data.get("toxicity_threshold", 0.5)))
+            settings_data["toxicity_threshold"] = threshold
+        except ValueError:
+            pass  # fallback if somehow invalid input gets through
+
+        if action == "add":
+            new_word = request.form.get("blacklisted_word", "").strip().lower()
+            if new_word and new_word not in settings_data["blacklisted_words"]:
+                settings_data["blacklisted_words"].append(new_word)
+
+        elif action == "remove":
+            word_to_remove = request.form.get("word_to_remove", "").strip().lower()
+            if word_to_remove in settings_data["blacklisted_words"]:
+                settings_data["blacklisted_words"].remove(word_to_remove)
+
+        # Save changes and refresh page
+        save_settings(settings_data)
+        return redirect(url_for('settings'))
+
+    return render_template(
+        "settings.html", 
+        toxicity_threshold=settings_data.get("toxicity_threshold", 0.5),
+        blacklisted_words=settings_data.get("blacklisted_words", [])
+    )
+
+
+
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
