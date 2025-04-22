@@ -3,21 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <title>ModBot Dashboard</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+
 </head>
 <body>
     <header>
-        <h1>ModBot Dashboard</h1>
-        <nav>
-            <a href="/">Home</a>
-            <a href="/flagged">Flagged Messages</a>
-            <a href="/whitelist">Whitelist</a>
-            <a href="/settings">Settings</a>
-        </nav>
+        <div class="container">
+            <h1>ModBot Dashboard</h1>
+            <nav>
+                <a href="/">Home</a>
+                <a href="/flagged">Flagged Messages</a>
+                <a href="/whitelist">Whitelist</a>
+                <a href="/settings">Settings</a>
+            </nav>
+        </div>
     </header>
-    <main>
+    <div class="content-wrapper">
         {% block content %}{% endblock %}
-    </main>
+    </div>
 </body>
-</html>
 </html>

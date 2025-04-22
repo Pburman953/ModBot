@@ -1,0 +1,203 @@
+/* General layout */
+body {
+    font-family: 'Montserrat', sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f4e1f2; /* Pastel pink background */
+    color: #333;
+}
+
+h1, h2, h3 {
+    color: #3e2a47; /* Dark purple text */
+}
+
+/* Container for centering content (applied to all pages) */
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Navbar styles */
+header {
+    background-color: #d6aadf; /* Pastel purple background */
+    color: white;
+    padding: 20px 0;
+}
+
+header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 {
+    font-size: 2.5em;
+    margin: 0;
+}
+
+header nav {
+    display: flex;
+    gap: 20px;
+}
+
+header nav a {
+    display: inline-flex;
+    justify-content: center; /* Horizontally center the text */
+    align-items: center; /* Vertically center the text */
+    color: white;
+    text-decoration: none;
+    font-size: 1.2rem;
+    padding: 8px 16px;
+    border-radius: 6px;
+    background-color: #bc7eb9; /* Lighter pastel purple */
+    transition: background-color 0.3s;
+}
+
+header nav a:hover {
+    background-color: #9a55a7; /* Slightly darker purple */
+}
+
+/* Forms */
+form {
+    margin-bottom: 20px;
+}
+
+input[type="text"],
+input[type="number"],
+button {
+    padding: 8px 12px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    background-color: #f8e6f9; /* Light pastel pink for inputs */
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus {
+    outline: none;
+    border-color: #bc7eb9; /* Lighter pastel purple for focus */
+}
+
+button {
+    display: inline-flex; /* Align content in the center horizontally */
+    justify-content: center; /* Horizontally center the text */
+    align-items: center; /* Vertically center the text */
+    padding: 8px 12px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    background-color: #bc7eb9; /* Pastel purple for buttons */
+    color: white;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #9a55a7; /* Slightly darker purple for button hover */
+}
+
+/* Lists */
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    padding: 6px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #f2c3e4; /* Light pink border for list items */
+}
+
+li form {
+    display: inline;
+}
+
+/* Table styles */
+table.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table.styled-table th,
+table.styled-table td {
+    border: 1px solid #dee2e6;
+    padding: 10px;
+    text-align: left;
+}
+
+table.styled-table thead {
+    background-color: #bc7eb9; /* Pastel purple header */
+    color: white;
+}
+
+table.styled-table tbody tr:nth-child(even) {
+    background-color: #f7e4f9; /* Very light pinkish purple for even rows */
+}
+
+table.styled-table tbody tr:hover {
+    background-color: #f1d1f5; /* Slightly darker pastel pink on row hover */
+    cursor: pointer;
+}
+
+/* Media queries for smaller screens */
+@media (max-width: 768px) {
+    header .container {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    header nav {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    header nav a {
+        padding: 10px 15px;
+    }
+
+    /* Make the container smaller on mobile */
+    .container {
+        max-width: 100%;
+        padding: 15px;
+    }
+}
+
+/* Dropdown menu styling */
+select {
+    padding: 10px 15px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    background-color: #f8e6f9; /* Light pastel pink */
+    color: #333;
+    cursor: pointer;
+    width: 100%; /* Make it responsive */
+    box-sizing: border-box; /* Ensures padding does not break layout */
+}
+
+select:focus {
+    outline: none;
+    border-color: #bc7eb9; /* Lighter pastel purple for focus */
+    background-color: #f1d1f5; /* Light purple background when focused */
+}
+
+/* Style the options inside the dropdown */
+select option {
+    padding: 10px;
+    background-color: #fff;
+    color: #333;
+}
+
+select option:hover {
+    background-color: #f1d1f5; /* Light purple when hovering over options */
+}

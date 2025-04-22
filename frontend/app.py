@@ -50,13 +50,27 @@ def whitelist():
     whitelist = load_whitelist()
 
     if request.method == "POST":
-        username = request.form.get("username", "").strip().lower()
-        if username and username not in whitelist:
-            whitelist.add(username)
-            save_whitelist(whitelist)
+        action = request.form.get("action")
+
+        if action == "add":
+            username = request.form.get("username", "").strip().lower()
+            if username and username not in whitelist:
+                whitelist.add(username)
+                save_whitelist(whitelist)
+                print(f"[ModBot] Added '{username}' to whitelist")
+
+        elif action == "remove":
+            username = request.form.get("username_to_remove", "").strip().lower()
+            if username in whitelist:
+                whitelist.remove(username)
+                save_whitelist(whitelist)
+                print(f"[ModBot] Removed '{username}' from whitelist")
+
         return redirect(url_for('whitelist'))
 
     return render_template("whitelist.html", whitelist=sorted(whitelist))
+
+
 
 @app.route('/settings', methods=["GET", "POST"])
 def settings():

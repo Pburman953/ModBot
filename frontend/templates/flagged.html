@@ -1,8 +1,10 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div class="container">
     <h1>Flagged Users</h1>
-    <table id="flagged-users-table">
+    
+    <table id="flagged-users-table" class="styled-table">
         <thead>
             <tr>
                 <th>Username</th>
@@ -26,33 +28,28 @@
             {% endfor %}
         </tbody>
     </table>
+</div>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        // Function to load flagged users dynamically via AJAX
-        function loadFlaggedUsers() {
-            $.get("/get_flagged_data", function(data) {
-                // Clear the current table body
-                $('#flagged-users-body').empty();
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    // Function to load flagged users dynamically via AJAX
+    function loadFlaggedUsers() {
+        $.get("/get_flagged_data", function(data) {
+            $('#flagged-users-body').empty();
+            for (var username in data) {
+                var userData = data[username];
+                var row = `<tr>
+                    <td>${username}</td>
+                    <td>${userData.last_message}</td>
+                    <td>${userData.last_offense_readable}</td>
+                    <td>${userData.action_taken}</td>
+                </tr>`;
+                $('#flagged-users-body').append(row);
+            }
+        });
+    }
 
-                // Loop through the data and append new rows to the table
-                for (var username in data) {
-                    var userData = data[username];
-                    var row = `<tr>
-                        <td>${username}</td>
-                        <td>${userData.last_message}</td>
-                        <td>${userData.last_offense_readable}</td>
-                        <td>${userData.action_taken}</td>
-                    </tr>`;
-                    $('#flagged-users-body').append(row);
-                }
-            });
-        }
-
-        // Load flagged users every 5 seconds
-        setInterval(loadFlaggedUsers, 5000);  // Fetch new data every 5 seconds
-
-        // Initial load on page load
-        loadFlaggedUsers();
-    </script>
+    setInterval(loadFlaggedUsers, 5000);
+    loadFlaggedUsers();
+</script>
 {% endblock %}
