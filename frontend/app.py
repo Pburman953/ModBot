@@ -8,6 +8,9 @@ from backend.utils.user_tracker import get_all_offenses
 from backend.utils.adaptive_punishment2 import load_whitelist, save_whitelist
 from backend.utils.settings import load_settings, save_settings
 
+import webbrowser
+import threading
+from flask import Flask
 
 import time
 
@@ -108,8 +111,10 @@ def settings():
 
 
 
+def open_browser():
+    webbrowser.open_new("http://127.0.0.1:5000/")  
 
-
-
-if __name__ == '__main__':
+if __name__ == "__main__":
+    if os.environ.get("WERKZEUG_RUN_MAIN") == "true":
+        threading.Timer(1.0, open_browser).start()
     app.run(debug=True)
