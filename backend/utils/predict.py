@@ -15,7 +15,7 @@ PAD_IDX = word_to_index["<pad>"]
 UNK_IDX = word_to_index["<unk>"]
 
 
-def predict_labels(text, model):
+def predict_labels(text, model, threshold):
     tokens = word_tokenize(preprocess(text))
     numericalized = [word_to_index.get(token, UNK_IDX) for token in tokens]
     text_tensor = torch.tensor([numericalized], dtype=torch.long).to(device)
@@ -25,7 +25,7 @@ def predict_labels(text, model):
         output = model(text_tensor, lengths)
 
     probabilities = output.squeeze().cpu().numpy()
-    predicted_labels = (probabilities > 0.5).astype(int)
+    predicted_labels = (probabilities > threshold).astype(int)
 
     label_names = ["toxic", "severe_toxic", "obscene", "threat", "insult", "identity_hate"]
     results = {}

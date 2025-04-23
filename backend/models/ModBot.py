@@ -205,7 +205,7 @@ def preprocess(text):
     return text
 
 # ------------ Prediction Function ------------
-def predict_labels(text, model, toxicity_threshold):
+def predict_labels(text, model):
     tokens = word_tokenize(preprocess(text))
     numericalized = [word_to_index.get(token, UNK_IDX) for token in tokens]
     text_tensor = torch.tensor([numericalized], dtype=torch.long).to(device)
@@ -215,7 +215,7 @@ def predict_labels(text, model, toxicity_threshold):
         output = model(text_tensor, lengths)
 
     probabilities = output.squeeze().cpu().numpy()
-    predicted_labels = (probabilities >= toxicity_threshold).astype(int)
+    predicted_labels = (probabilities > 0.5).astype(int)
 
     label_names = ["toxic", "severe_toxic", "obscene", "threat", "insult", "identity_hate"]
     results = {}

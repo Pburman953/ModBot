@@ -43,8 +43,8 @@ def load_offenses():
 
 
 def adaptive_punishment(username, toxicity_labels, message, access_token, client_id, moderator_id, broadcaster_id):
-    global WHITELIST
-    if username in WHITELIST:
+    whitelist = load_whitelist()
+    if username in whitelist:
         print(f"[ModBot] {username} is whitelisted. Skipping punishment.")
         return
     else: 
