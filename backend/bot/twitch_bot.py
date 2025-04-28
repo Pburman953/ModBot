@@ -93,9 +93,8 @@ add_to_whitelist(config.CHANNEL.replace("#", ""))
 
 fetch_and_store_ids()
 
-settings_data = load_settings()
-toxicity_threshold = settings_data["toxicity_threshold"]
-blacklisted_words = set(settings_data["blacklisted_words"])
+
+
 
 while True:
     resp = sock.recv(2048).decode("utf-8")
@@ -112,7 +111,10 @@ while True:
         print(f"{username}: {message}")
         
         whitelist = load_whitelist()
+        settings_data = load_settings()
+        toxicity_threshold = settings_data["toxicity_threshold"]
 
+        blacklisted_words = set(settings_data["blacklisted_words"])
 
         if username.lower() in whitelist:
             print(f"[ModBot] {username} is whitelisted. Skipping punishment.")
